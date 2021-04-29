@@ -3,13 +3,13 @@ plugins {
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 29
     buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.plaza19.sharelife"
         minSdkVersion 21
-        targetSdkVersion 30
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
 
@@ -40,6 +40,8 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:27.1.0')
     implementation 'com.google.firebase:firebase-auth'
     implementation 'com.google.firebase:firebase-firestore'
+    implementation 'com.sun.mail:android-mail:1.6.3'
+    implementation 'com.sun.mail:android-activation:1.6.3'
 }
 
 apply plugin: 'com.google.gms.google-services'
