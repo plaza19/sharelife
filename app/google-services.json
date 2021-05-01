@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "568403940177",
+    "project_id": "sharelife-fbe2d",
+    "storage_bucket": "sharelife-fbe2d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:568403940177:android:96a8fe40be935dc2007970",
+        "android_client_info": {
+          "package_name": "com.plaza19.sharelife"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "568403940177-csefs3hknv1raoiaafn22mp1vt6qh3eo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.plaza19.sharelife",
+            "certificate_hash": "5d1bfb79cfad2a9db7ca8fae5cb097d8ddb0007d"
+          }
+        },
+        {
+          "client_id": "568403940177-es79m9ubkp1125q13p17ej79ngv53311.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAW6oxepJdDM3vld665C7tP4zGv8yYVoC8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "568403940177-es79m9ubkp1125q13p17ej79ngv53311.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
