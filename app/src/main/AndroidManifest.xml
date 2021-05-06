@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Sharelife">
-        <activity android:name=".RecupinActivity"></activity>
+        <activity android:name="activity.PublicacionActivity"></activity>
+        <activity android:name=".RecupinActivity" />
         <activity android:name=".PrincipalActivity" />
         <activity android:name=".RegistroActivity" />
         <activity android:name=".MainActivity">

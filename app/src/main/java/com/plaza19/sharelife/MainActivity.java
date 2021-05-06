@@ -19,6 +19,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.yanzhenjie.loading.dialog.LoadingDialog;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
     private Button btn_sesion;
     private FirebaseAuth auth;
     private int intentos =0;
+    private LoadingDialog loading_dialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         btn_sesion = findViewById(R.id.btn_iniciarSesion);
         cuentaOlvidada = findViewById(R.id.texViewCuentaOlvidada);
         auth = FirebaseAuth.getInstance();
+        loading_dialog = new LoadingDialog(MainActivity.this);
 
 
         textViewRegistrar = findViewById(R.id.texViewRegistrar);
@@ -62,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Intent i = new Intent(MainActivity.this, PrincipalActivity.class);
                             startActivity(i);
+                            loading_dialog.show();
                         }else {
                             Toast.makeText(MainActivity.this, "Email o contraseña incorrectos", Toast.LENGTH_SHORT).show();
                             intentos ++;
@@ -70,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
                                 cuentaOlvidada.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
+                                        loading_dialog.show();
                                         Intent i = new Intent(MainActivity.this, RecupinActivity.class);
                                         i.putExtra("CORREO", edit_email.getText().toString()); //pasamos el email al que enviamos el pin
                                         startActivity(i);
@@ -84,4 +90,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        loading_dialog.hide();
+    }
+
 }

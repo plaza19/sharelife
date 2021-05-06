@@ -17,6 +17,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.yanzhenjie.loading.dialog.LoadingDialog;
 
 import java.util.HashMap;
 
@@ -27,6 +28,7 @@ public class RegistroActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private FirebaseFirestore firestore;
     private final String COLLECTION_USERS = "Users";
+    private LoadingDialog loading_dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +42,7 @@ public class RegistroActivity extends AppCompatActivity {
         btn_register = findViewById(R.id.button_register);
         auth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
+
 
 
         edit_password_confirm.addTextChangedListener(new TextWatcher() {
@@ -126,11 +129,19 @@ public class RegistroActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        loading_dialog.hide();
+    }
+
     private void createUser() {
         auth.createUserWithEmailAndPassword(edit_email.getText().toString(), edit_password_confirm.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
+                    loading_dialog = new LoadingDialog(RegistroActivity.this);
+                    loading_dialog.show();
                     Toast.makeText(RegistroActivity.this, "Usuario creado correctamente", Toast.LENGTH_SHORT).show();
                     HashMap<String, Object> data_map = new HashMap<>();
                     data_map.put("email", edit_email.getText().toString());
