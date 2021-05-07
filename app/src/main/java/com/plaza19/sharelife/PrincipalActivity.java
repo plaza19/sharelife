@@ -13,6 +13,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import fragments.ChatFragment;
 import fragments.PerfilFragment;
 import fragments.PrincipalFragment;
+import fragments.SearchFragment;
 
 public class PrincipalActivity extends AppCompatActivity {
 
@@ -44,6 +45,9 @@ public class PrincipalActivity extends AppCompatActivity {
                             return true;
                         case R.id.navigation_chats:
                             openFragment(new ChatFragment());
+                            return true;
+                        case R.id.navigation_buscar:
+                            openFragment(new SearchFragment());
                             return true;
                         case R.id.navigation_perfil:
                             openFragment(new PerfilFragment());

@@ -9,6 +9,10 @@
         android:icon="@drawable/ic_baseline_chat_24"
         android:title="Chats" />
     <item
+        android:id="@+id/navigation_buscar"
+        android:icon="@drawable/ic_baseline_search_24"
+        android:title="Buscar" />
+    <item
         android:id="@+id/navigation_perfil"
         android:icon="@drawable/ic_baseline_person_24"
         android:title="Perfil" />
