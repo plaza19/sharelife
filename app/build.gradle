@@ -46,6 +46,9 @@ dependencies {
     implementation 'com.sun.mail:android-activation:1.6.3'
     implementation 'com.yanzhenjie:loading:1.0.2'
     implementation 'com.github.Ferfalk:SimpleSearchView:0.2.0'
+    implementation 'com.google.firebase:firebase-storage:19.1.1'
+    implementation 'id.zelory:compressor:2.1.0'
+    implementation 'com.squareup.picasso:picasso:2.5.2'
 }
 
 apply plugin: 'com.google.gms.google-services'
