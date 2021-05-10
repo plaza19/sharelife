@@ -27,6 +27,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.UploadTask;
+import com.plaza19.sharelife.BuildConfig;
 import com.plaza19.sharelife.PrincipalActivity;
 import com.plaza19.sharelife.R;
 import com.squareup.picasso.Picasso;
@@ -35,6 +36,7 @@ import com.yanzhenjie.loading.dialog.LoadingDialog;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Objects;
 
 import Utils.FileUtil;
 import Utils.ImageHander;
@@ -124,11 +126,39 @@ public class PublicacionActivity extends AppCompatActivity {
     private void hacerFoto() {
 
         Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(i, FOTO_REQUEST_CODE);
+        if (i.resolveActivity(getPackageManager()) != null) {
+            File fotoFile = null;
+            try {
+                fotoFile = crearFotoFile();
+            }catch (Exception e) {
+                Toast.makeText(PublicacionActivity.this,"Error con el archivo" + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+
+            if(fotoFile != null) {
+                //Uri foto_uri = FileProvider.getUriForFile(PublicacionActivity.this, "com.plaza10.sharelife", fotoFile);
+                Uri foto_uri = FileProvider.getUriForFile(Objects.requireNonNull(getApplicationContext()),
+                        BuildConfig.APPLICATION_ID + ".provider", fotoFile);
+                i.putExtra(MediaStore.EXTRA_OUTPUT, foto_uri);
+                startActivityForResult(i, FOTO_REQUEST_CODE);
+            }
+        }
+
 
     }
 
+    private File crearFotoFile() {
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File fotoFile = null;
+        try {
+            fotoFile = File.createTempFile(new Date() + "_foto", ".jpg", storageDir);
+            foto_path = "file:" + fotoFile.getAbsolutePath();
+            foto_absolute_path = fotoFile.getAbsolutePath();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+        return fotoFile;
+    }
 
     private void guardarImagen() {
         loading_dialog.show();
@@ -194,14 +224,14 @@ public class PublicacionActivity extends AppCompatActivity {
         //CAMARA
 
         if (requestCode == FOTO_REQUEST_CODE && resultCode == RESULT_OK) {
-            Bitmap bitmap = (Bitmap)data.getExtras().get("data");
-            preview.setImageBitmap(bitmap);
-            preview.setVisibility(View.VISIBLE);
-            try {
 
+            try {
+                Picasso.with(PublicacionActivity.this).load(foto_path).into(preview);
+                imagen = FileUtil.from(PublicacionActivity.this, Uri.parse(foto_path));
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            preview.setVisibility(View.VISIBLE);
 
         }
     }
