@@ -1,5 +1,7 @@
 package modelos;
 
+import java.util.ArrayList;
+
 public class Publicacion {
 
     public Publicacion() {
@@ -7,6 +9,7 @@ public class Publicacion {
     }
 
     private String id, comentario, image, id_usuario;
+    private ArrayList<String> viewers;
 
     public Publicacion(String id, String comentario, String image, String id_usuario) {
         this.id = id;
@@ -45,5 +48,13 @@ public class Publicacion {
 
     public void setId_usuario(String id_usuario) {
         this.id_usuario = id_usuario;
+    }
+
+    public ArrayList<String> getViewers() {
+        return viewers;
+    }
+
+    public void setViewers(ArrayList<String> viewers) {
+        this.viewers = viewers;
     }
 }

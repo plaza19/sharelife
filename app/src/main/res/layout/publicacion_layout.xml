@@ -1,34 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="350dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_margin="5dp"
-    app:cardCornerRadius="20dp">
+    android:layout_height="wrap_content">
 
     <LinearLayout
+        android:id="@+id/idLLTopBar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="4dp">
 
-        <ImageView
-            android:id="@+id/imageView_publicacion_home"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_baseline_edit_24"
-            android:scaleType="centerCrop"
-            android:layout_weight="10"/>
+        <!--circle image for displaying the user image-->
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/idCVAuthor"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="5dp" />
 
+        <!--text view for displaying user name-->
         <TextView
-            android:id="@+id/text_comentario_home"
+            android:id="@+id/idTVAuthorName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Comentario"
-            android:maxLines="2"
-            android:padding="6dp"
-            android:layout_weight="1"/>
+            android:layout_gravity="center"
+            android:layout_margin="3dp"
+            android:padding="3dp"
+            android:text="geeks_for_geeks"
+            android:textStyle="bold" />
+    </LinearLayout>
 
+    <!--image view to display the post image-->
+    <ImageView
+        android:id="@+id/imageView_publicacion_home"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_below="@id/idLLTopBar"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop" />
+
+    <!--text view to display likes count-->
+
+    <LinearLayout
+        android:id="@+id/layout_likes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/imageView_publicacion_home"
+        android:orientation="horizontal">
+
+    <ImageView
+        android:layout_width="25dp"
+        android:layout_height="match_parent"
+        android:src="@drawable/heart"
+        android:layout_marginLeft="16dp"
+        />
+
+    <TextView
+        android:id="@+id/idTVLikes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="6dp"
+        android:padding="5dp"
+        android:text="0"
+        android:textStyle="bold"/>
 
     </LinearLayout>
 
-</androidx.cardview.widget.CardView>
+    <!--text view to display the caption
+        in instagram post-->
+    <TextView
+        android:id="@+id/text_comentario_home"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layout_likes"
+        android:layout_margin="6dp"
+        android:padding="5dp"
+        android:textSize="11sp" />
+
+</RelativeLayout>

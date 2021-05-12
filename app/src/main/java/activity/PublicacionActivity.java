@@ -35,6 +35,7 @@ import com.yanzhenjie.loading.dialog.LoadingDialog;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
 
@@ -172,6 +173,9 @@ public class PublicacionActivity extends AppCompatActivity {
                             String url = uri.toString();
                             Publicacion publicacion = new Publicacion();
                             publicacion.setImage(url);
+                            ArrayList<String> viewers = new ArrayList<String>(); //se guardan las personas que pueden ver
+                            viewers.add(auth.getCurrentUser().getUid());
+                            publicacion.setViewers(viewers);
                             publicacion.setComentario(edit_comentario.getText().toString());
                             publicacion.setId_usuario(auth.getCurrentUser().getUid());
                             publicacionManager.save(publicacion).addOnCompleteListener(new OnCompleteListener<Void>() {

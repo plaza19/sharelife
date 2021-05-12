@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.yanzhenjie.loading.dialog.LoadingDialog;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class RegistroActivity extends AppCompatActivity {
@@ -146,6 +147,7 @@ public class RegistroActivity extends AppCompatActivity {
                     HashMap<String, Object> data_map = new HashMap<>();
                     data_map.put("email", edit_email.getText().toString());
                     data_map.put("user_name", edit_user.getText().toString());
+                    data_map.put("id_publications", new ArrayList<String>());
                     //Documento usuario con el uid que se genera en firebase-auth
                     firestore.collection(COLLECTION_USERS).document(auth.getCurrentUser().getUid()).set(data_map);
                 }else {
