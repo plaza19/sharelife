@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_margin="16dp"
+    android:gravity="center|left">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/foto_lista_usuarios"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@color/purple_500"
+        android:layout_margin="16dp">
+
+
+    </de.hdodenhof.circleimageview.CircleImageView>
+
+    <TextView
+        android:id="@+id/nombre_lista_usuario"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxLines="2"
+        android:text="Nombre de usuario"
+        android:textStyle="bold"
+        android:textSize="20dp"/>
+
+</LinearLayout>

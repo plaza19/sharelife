@@ -13,20 +13,22 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.plaza19.sharelife.R;
 
 import java.util.ArrayList;
 
+import adapters.ListaUsuariosAdapter;
+import modelos.Usuario;
+
 public class SearchFragment extends Fragment{
 
     private View view;
     SearchView search;
     ListView listView;
-    ArrayList<String> stringArrayList;
-    ArrayAdapter<String> adapter;
+    ArrayList<Usuario> User_list;
+    ListaUsuariosAdapter adapter;
     private FirebaseFirestore firestore;
 
    public SearchFragment() {
@@ -41,13 +43,15 @@ public class SearchFragment extends Fragment{
 
        firestore = FirebaseFirestore.getInstance();
        ListView listView = view.findViewById(R.id.lv);
-       stringArrayList = new ArrayList<>();
+       User_list = new ArrayList<>();
 
             firestore.collection("Users").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                @Override
                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                    for (int i=0; i<queryDocumentSnapshots.size(); i++) {
-                       stringArrayList.add(queryDocumentSnapshots.getDocuments().get(i).get("user_name").toString());
+                       Usuario aux = new Usuario();
+                       aux.setUsername(queryDocumentSnapshots.getDocuments().get(i).get("user_name").toString());
+                       User_list.add(aux);
                    }
 
                }
@@ -56,14 +60,14 @@ public class SearchFragment extends Fragment{
 
 
 
-       adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, stringArrayList);
+       adapter = new ListaUsuariosAdapter(getContext(), R.layout.list_user_row, User_list);
 
        listView.setAdapter(adapter);
 
        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
            @Override
            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-               Toast.makeText(getContext(), adapter.getItem(position), Toast.LENGTH_SHORT).show();
+               //Toast.makeText(getContext(), adapter.getItem(position), Toast.LENGTH_SHORT).show();
            }
        });
 

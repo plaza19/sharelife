@@ -12,10 +12,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.plaza19.sharelife.R;
 import com.squareup.picasso.Picasso;
 
 import modelos.Publicacion;
+import modelos.Usuario;
 
 public class PublicacionAdapter extends FirestoreRecyclerAdapter<Publicacion, PublicacionAdapter.ViewHolder> {
 
@@ -30,6 +35,16 @@ public class PublicacionAdapter extends FirestoreRecyclerAdapter<Publicacion, Pu
     protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull Publicacion model) {
         holder.comentario.setText(model.getComentario());
         Picasso.with(this.context).load(model.getImage()).into(holder.foto);
+
+        //obtenemos el nombre del usuario a partir del id
+
+        FirebaseFirestore store = FirebaseFirestore.getInstance();
+        store.collection("Users").document(model.getId_usuario()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                holder.usuario.setText(task.getResult().get("user_name").toString());
+            }
+        });
     }
 
     @NonNull
@@ -41,13 +56,14 @@ public class PublicacionAdapter extends FirestoreRecyclerAdapter<Publicacion, Pu
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView comentario;
+        TextView comentario, usuario;
         ImageView foto;
 
         public ViewHolder(View view) {
             super(view);
             foto = view.findViewById(R.id.imageView_publicacion_home);
             comentario = view.findViewById(R.id.text_comentario_home);
+            usuario = view.findViewById(R.id.textView_usuario_publi);
         }
 
 
