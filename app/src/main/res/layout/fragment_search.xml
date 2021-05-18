@@ -15,7 +15,8 @@
         android:id="@+id/search_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:queryHint="Busca usuarios" />
+        android:queryHint="Busca usuarios"
+        android:inputType="textNoSuggestions"/>
 
     <ListView
         android:id="@+id/lv"

@@ -27,11 +27,20 @@ public class UserManager {
         return collection_reference.document(user.getId()).set(user);
     }
 
-    public Query getNumPublications() {
+    public Query getNumPublications(String uid) {
 
         collection_reference = FirebaseFirestore.getInstance().collection("Publicaciones");
 
-        return collection_reference.whereEqualTo("id_usuario", auth.getCurrentUser().getUid());
+        return collection_reference.whereEqualTo("id_usuario", uid);
 
+    }
+
+    public Query getUsers_list_query(String newText) {
+
+        return collection_reference.orderBy("user_name").startAt(newText).endAt(newText + "\uf8ff");
+    }
+
+    public Query getUserByUserName(String username) {
+        return collection_reference.whereEqualTo("user_name", username);
     }
 }

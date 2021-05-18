@@ -48,9 +48,9 @@ public class PublicacionManager {
         return collection.orderBy("image").whereArrayContains("viewers", auth.getCurrentUser().getUid());
     }
 
-    public Query getAllFromUser() {
+    public Query getAllFromUser(String uid) {
 
-        return collection.whereEqualTo("id_usuario", auth.getCurrentUser().getUid());
+        return collection.whereEqualTo("id_usuario", uid);
     }
 
 

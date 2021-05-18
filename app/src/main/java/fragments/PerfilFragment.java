@@ -27,6 +27,7 @@ import java.util.List;
 import Utils.PublicacionManager;
 import Utils.UserManager;
 import adapters.GridAdapter;
+import modelos.Usuario;
 
 
 public class PerfilFragment extends Fragment {
@@ -39,11 +40,20 @@ public class PerfilFragment extends Fragment {
     private PublicacionManager publicacionManager;
     private GridView gridView;
     private GridAdapter gridAdapter;
+    private String user_name;
+    private Usuario user;
 
 
     public PerfilFragment() {
-        // Required empty public constructor
+        this.user_name = "";
     }
+
+    public PerfilFragment(String user_name) {
+        this.user_name = user_name;
+        this.user = new Usuario();
+        user.setUsername(user_name);
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -56,57 +66,128 @@ public class PerfilFragment extends Fragment {
         gridView = view.findViewById(R.id.grid_view_perfil);
         ArrayList<String> list_publications = new ArrayList<String>();
 
-        publicacionManager.getAllFromUser().get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    List<DocumentSnapshot> list = task.getResult().getDocuments();
-                    for (int i=0; i<list.size(); i++) {
-                        Log.d("TEST", list.get(i).get("image").toString());
-                        list_publications.add(list.get(i).get("image").toString());
-                        gridAdapter = new GridAdapter(getContext(), list_publications);
-                        gridView.setAdapter(gridAdapter);
+        if (this.user_name.matches("")) {
+
+            publicacionManager.getAllFromUser(auth.getCurrentUser().getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        List<DocumentSnapshot> list = task.getResult().getDocuments();
+                        for (int i = 0; i < list.size(); i++) {
+                            Log.d("TEST", list.get(i).get("image").toString());
+                            list_publications.add(list.get(i).get("image").toString());
+                            gridAdapter = new GridAdapter(getContext(), list_publications);
+                            gridView.setAdapter(gridAdapter);
+                        }
                     }
                 }
-            }
-        });
+            });
 
-
+        }else {
+            userManager.getUserByUserName(this.user_name).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    String userUid = task.getResult().getDocuments().get(0).getId();
+                    publicacionManager.getAllFromUser(userUid).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                List<DocumentSnapshot> list = task.getResult().getDocuments();
+                                for (int i = 0; i < list.size(); i++) {
+                                    Log.d("TEST", list.get(i).get("image").toString());
+                                    list_publications.add(list.get(i).get("image").toString());
+                                    gridAdapter = new GridAdapter(getContext(), list_publications);
+                                    gridView.setAdapter(gridAdapter);
+                                }
+                            }
+                        }
+                    });
+                }else {
+                    Toast.makeText(getContext(), "No se ha podido obtener la información del usuario", Toast.LENGTH_LONG).show();
+                }
+                }
+            });
+        }
 
 
         nombre_perfil = view.findViewById(R.id.TextView_nombre_perfil);
         num_publicaciones = view.findViewById(R.id.textView_num_publicaciones_perfil);
         correo = view.findViewById(R.id.TextView_correo_perfil);
 
-        store.collection("Users").document(auth.getCurrentUser().getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    nombre_perfil.setText(task.getResult().get("user_name").toString());
-                }else {
-                    Toast.makeText(getContext(), "No se ha podido obtener la información del usuario", Toast.LENGTH_LONG).show();
+        if (this.user_name.matches("")) {
+
+            store.collection("Users").document(auth.getCurrentUser().getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        nombre_perfil.setText(task.getResult().get("user_name").toString());
+                        correo.setText(auth.getCurrentUser().getEmail());
+                    } else {
+                        Toast.makeText(getContext(), "No se ha podido obtener la información del usuario", Toast.LENGTH_LONG).show();
+                    }
+
                 }
+            });
 
-            }
-        });
-        correo.setText(auth.getCurrentUser().getEmail());
-
-
-        userManager.getNumPublications().get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
-                if (task.isSuccessful()) {
-                    num_publicaciones.setText(String.valueOf(task.getResult().size()));
-                    Log.d("TEST", task.getResult().size() + "");
-                }else {
-                    Toast.makeText(getContext(), "No se ha podido obtener el numero de publicaciones", Toast.LENGTH_LONG).show();
+        }else {
+            userManager.getUserByUserName(this.user_name).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        nombre_perfil.setText(task.getResult().getDocuments().get(0).get("user_name").toString());
+                        correo.setText(task.getResult().getDocuments().get(0).get("email").toString());
+                    }else {
+                        Toast.makeText(getContext(), "No se ha podido obtener la información del usuario", Toast.LENGTH_LONG).show();
+                    }
                 }
-
-            }
-        });
+            });
 
 
+        }// si se abre el fragment desde la lista de contactos
+
+        if (this.user_name.matches("")) {
+
+            userManager.getNumPublications(auth.getCurrentUser().getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                    if (task.isSuccessful()) {
+                        num_publicaciones.setText(String.valueOf(task.getResult().size()));
+                        Log.d("TEST", task.getResult().size() + "");
+                    } else {
+                        Toast.makeText(getContext(), "No se ha podido obtener el numero de publicaciones", Toast.LENGTH_LONG).show();
+                    }
+
+                }
+            });
+
+        }else {
+
+            userManager.getUserByUserName(this.user_name).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        String userUid = task.getResult().getDocuments().get(0).getId();
+                        userManager.getNumPublications(userUid).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    num_publicaciones.setText(String.valueOf(task.getResult().size()));
+                                    Log.d("TEST", task.getResult().size() + "");
+                                }else {
+                                    Toast.makeText(getContext(), "No se ha podido obtener el numero de publicaciones", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
+                    }else {
+                        Toast.makeText(getContext(), "No se ha podido obtener el numero de publicaciones", Toast.LENGTH_LONG).show();
+                    }
+
+                }
+            });
+
+        }//se se abre el fragment desde la lista de contactos
 
 
         return view;

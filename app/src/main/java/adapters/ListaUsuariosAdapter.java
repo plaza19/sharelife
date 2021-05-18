@@ -48,4 +48,5 @@ public class ListaUsuariosAdapter extends ArrayAdapter<Usuario> {
 
         return view;
     }
+
 }

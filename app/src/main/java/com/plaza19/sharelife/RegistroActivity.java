@@ -147,7 +147,7 @@ public class RegistroActivity extends AppCompatActivity {
                     HashMap<String, Object> data_map = new HashMap<>();
                     data_map.put("email", edit_email.getText().toString());
                     data_map.put("user_name", edit_user.getText().toString());
-                    data_map.put("id_publications", new ArrayList<String>());
+                    data_map.put("followed_by", new ArrayList<String>().add(auth.getCurrentUser().getUid()));
                     //Documento usuario con el uid que se genera en firebase-auth
                     firestore.collection(COLLECTION_USERS).document(auth.getCurrentUser().getUid()).set(data_map);
                 }else {
