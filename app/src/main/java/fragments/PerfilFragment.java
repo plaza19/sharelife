@@ -4,12 +4,14 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +44,7 @@ public class PerfilFragment extends Fragment {
     private GridAdapter gridAdapter;
     private String user_name;
     private Usuario user;
+    private LinearLayout edit_perfil;
 
 
     public PerfilFragment() {
@@ -65,6 +68,27 @@ public class PerfilFragment extends Fragment {
         publicacionManager = new PublicacionManager();
         gridView = view.findViewById(R.id.grid_view_perfil);
         ArrayList<String> list_publications = new ArrayList<String>();
+        edit_perfil = view.findViewById(R.id.TextView_editar_perfil);
+
+        edit_perfil.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                userManager.getUser(auth.getCurrentUser().getUid()).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("USUR", task.getResult().get("user_name").toString());
+                            openFragment(new EditarPerfilFragment(auth.getCurrentUser().getEmail(), task.getResult().get("user_name").toString()));
+                        }else {
+                            Toast.makeText(getContext(), "No se puede editar el perfil", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                });
+            }
+        });
+
+
 
         if (this.user_name.matches("")) {
 
@@ -190,6 +214,16 @@ public class PerfilFragment extends Fragment {
         }//se se abre el fragment desde la lista de contactos
 
 
+
+
         return view;
     }
+
+    public void openFragment(Fragment fragment) {
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.container, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
 }

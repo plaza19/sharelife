@@ -20,7 +20,11 @@ public class UserManager {
     }
 
     public Task<DocumentSnapshot> getUser(String id) {
-        return collection_reference.document(id).get();
+        return FirebaseFirestore.getInstance().collection("Users").document(id).get();
+    }
+
+    public Task<Void> UpdateUser(String id, String value_id, String newValue) {
+        return FirebaseFirestore.getInstance().collection("Users").document(id).update(value_id, newValue);
     }
 
     public Task<Void> createUser(Usuario user) {
