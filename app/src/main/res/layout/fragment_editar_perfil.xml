@@ -42,6 +42,7 @@
                     android:transitionName="Usuario"/>
 
                 <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/imageView_foto_perfil_editar_perfil"
                     android:layout_width="match_parent"
                     android:layout_height="140dp"
                     android:src="@drawable/ic_baseline_person_24"

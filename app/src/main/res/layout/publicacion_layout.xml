@@ -18,7 +18,7 @@
             android:src="@drawable/ic_baseline_person_24"
             app:civ_circle_background_color="#aaa"
             android:layout_margin="5dp"
-            android:id="@+id/idCVAuthor"/>
+            android:id="@+id/idPhoto_user"/>
 
 
         <!--text view for displaying user name-->

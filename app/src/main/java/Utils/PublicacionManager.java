@@ -43,6 +43,10 @@ public class PublicacionManager {
         return collection.document().set(publicacion);
     }
 
+    public Task<Void> saveProfile_foto(String url) {
+        return collection_user.document(auth.getCurrentUser().getUid()).update("profile_image", url );
+    }
+
     public Query getAll() {
 
         return collection.orderBy("image").whereArrayContains("viewers", auth.getCurrentUser().getUid());
