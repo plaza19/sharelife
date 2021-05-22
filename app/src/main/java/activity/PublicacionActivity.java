@@ -26,6 +26,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.UploadTask;
 import com.plaza19.sharelife.BuildConfig;
 import com.plaza19.sharelife.PrincipalActivity;
@@ -40,6 +41,7 @@ import java.util.Date;
 import java.util.Objects;
 
 import Utils.FileUtil;
+import Utils.Hash;
 import Utils.ImageHander;
 import Utils.PublicacionManager;
 import modelos.Publicacion;
@@ -178,6 +180,11 @@ public class PublicacionActivity extends AppCompatActivity {
                             publicacion.setViewers(viewers);
                             publicacion.setComentario(edit_comentario.getText().toString());
                             publicacion.setId_usuario(auth.getCurrentUser().getUid());
+                            ArrayList<String> liked_by = new ArrayList<>(); //personas a las que le ha gustado la imagen
+                            liked_by.add(auth.getCurrentUser().getUid());
+                            publicacion.setLiked_by(liked_by);
+                            publicacion.setLikes(0);
+                            publicacion.setId(Hash.md5(publicacion.getImage() + publicacion.getId_usuario() + new Date().toString()));
                             publicacionManager.save(publicacion).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task_save) {

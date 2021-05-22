@@ -62,8 +62,11 @@ public class SearchFragment extends Fragment{
                    for (int i=0; i<queryDocumentSnapshots.size(); i++) {
                        Usuario aux = new Usuario();
                        aux.setUsername(queryDocumentSnapshots.getDocuments().get(i).get("user_name").toString());
+                       aux.setUrl_profile_photo(queryDocumentSnapshots.getDocuments().get(i).get("profile_image").toString());
                        user_list.add(aux);
                    }
+
+                   Log.d("MIRA", user_list.toString());
 
                }
            });
@@ -95,13 +98,15 @@ public class SearchFragment extends Fragment{
                        if (task.isSuccessful()) {
                            List<DocumentSnapshot> documents = task.getResult().getDocuments();
                            adapter.clear();
+                           adapter.notifyDataSetChanged();
                            for (int i=0; i<documents.size(); i++) {
                                Usuario aux = new Usuario();
                                aux.setUsername(documents.get(i).get("user_name").toString());
+                               aux.setUrl_profile_photo(documents.get(i).get("profile_image").toString());
                                adapter.add(aux);
                            }
                        }else {
-                           Toast.makeText(getContext(), "No se han podido los usuarios", Toast.LENGTH_SHORT);
+                           Toast.makeText(getContext(), "No se han podido obtener los usuarios", Toast.LENGTH_SHORT);
                        }
                    }
                });

@@ -323,6 +323,7 @@ public class EditarPerfilFragment extends Fragment {
 
         if(requestCode == REQUEST_CODE && resultCode == -1) {//RESULT_OK
             try {
+                Picasso.with(getContext()).load(data.getData()).into(profile_foto);
                 imagen = FileUtil.from(getContext(), data.getData());
                 btn_guardar.setEnabled(true);
                 aux_image_profile_foto = "OK";

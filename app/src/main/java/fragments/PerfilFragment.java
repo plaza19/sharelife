@@ -3,6 +3,7 @@ package fragments;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.ButtonBarLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -39,7 +41,7 @@ public class PerfilFragment extends Fragment {
     private FirebaseAuth auth;
     private FirebaseFirestore store;
     private View view;
-    private TextView nombre_perfil, num_publicaciones, correo;
+    private TextView nombre_perfil, num_publicaciones, correo, num_seguidores;
     private UserManager userManager;
     private PublicacionManager publicacionManager;
     private GridView gridView;
@@ -48,6 +50,7 @@ public class PerfilFragment extends Fragment {
     private Usuario user;
     private LinearLayout edit_perfil;
     private ImageView profile_foto;
+    private Button btnn_seguir;
 
 
     public PerfilFragment() {
@@ -73,6 +76,11 @@ public class PerfilFragment extends Fragment {
         ArrayList<String> list_publications = new ArrayList<String>();
         edit_perfil = view.findViewById(R.id.TextView_editar_perfil);
         profile_foto = view.findViewById(R.id.profile_foto_perfil);
+        num_seguidores = view.findViewById(R.id.textView_num_seguidores_perfil);
+        btnn_seguir = view.findViewById(R.id.btn_seguir_perfil);
+        nombre_perfil = view.findViewById(R.id.TextView_nombre_perfil);
+        num_publicaciones = view.findViewById(R.id.textView_num_publicaciones_perfil);
+        correo = view.findViewById(R.id.TextView_correo_perfil);
 
         edit_perfil.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,7 +103,7 @@ public class PerfilFragment extends Fragment {
 
 
         if (this.user_name.matches("")) {
-
+            btnn_seguir.setVisibility(View.GONE);
             publicacionManager.getAllFromUser(auth.getCurrentUser().getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -112,6 +120,8 @@ public class PerfilFragment extends Fragment {
             });
 
         }else {
+            correo.setVisibility(view.GONE);
+            edit_perfil.setVisibility(View.GONE);
             userManager.getUserByUserName(this.user_name).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -139,10 +149,6 @@ public class PerfilFragment extends Fragment {
         }
 
 
-        nombre_perfil = view.findViewById(R.id.TextView_nombre_perfil);
-        num_publicaciones = view.findViewById(R.id.textView_num_publicaciones_perfil);
-        correo = view.findViewById(R.id.TextView_correo_perfil);
-
         if (this.user_name.matches("")) {
 
             store.collection("Users").document(auth.getCurrentUser().getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -151,7 +157,10 @@ public class PerfilFragment extends Fragment {
                     if (task.isSuccessful()) {
                         nombre_perfil.setText(task.getResult().get("user_name").toString());
                         correo.setText(auth.getCurrentUser().getEmail());
-                        Picasso.with(getContext()).load(task.getResult().get("profile_image").toString()).into(profile_foto);
+                        if (task.getResult().get("profile_image").toString() != "") {
+                            Picasso.with(getContext()).load(task.getResult().get("profile_image").toString()).into(profile_foto);
+                        }
+
                     } else {
                         Toast.makeText(getContext(), "No se ha podido obtener la información del usuario", Toast.LENGTH_LONG).show();
                     }
@@ -166,7 +175,9 @@ public class PerfilFragment extends Fragment {
                     if (task.isSuccessful()) {
                         nombre_perfil.setText(task.getResult().getDocuments().get(0).get("user_name").toString());
                         correo.setText(task.getResult().getDocuments().get(0).get("email").toString());
-                        Picasso.with(getContext()).load(task.getResult().getDocuments().get(0).get("profile_image").toString()).into(profile_foto);
+                        if (task.getResult().getDocuments().get(0).get("profile_image").toString() != "") {
+                            Picasso.with(getContext()).load(task.getResult().getDocuments().get(0).get("profile_image").toString()).into(profile_foto);
+                        }
                     }else {
                         Toast.makeText(getContext(), "No se ha podido obtener la información del usuario", Toast.LENGTH_LONG).show();
                     }
@@ -178,7 +189,7 @@ public class PerfilFragment extends Fragment {
 
         if (this.user_name.matches("")) {
 
-            userManager.getNumPublications(auth.getCurrentUser().getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            publicacionManager.getNumPublications(auth.getCurrentUser().getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
@@ -199,7 +210,7 @@ public class PerfilFragment extends Fragment {
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     if (task.isSuccessful()) {
                         String userUid = task.getResult().getDocuments().get(0).getId();
-                        userManager.getNumPublications(userUid).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        publicacionManager.getNumPublications(userUid).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                 if (task.isSuccessful()) {
@@ -218,6 +229,36 @@ public class PerfilFragment extends Fragment {
             });
 
         }//se se abre el fragment desde la lista de contactos
+
+        //Número de seguidores
+        if (this.user_name.matches("")) {
+            userManager.getCountFollowers(auth.getCurrentUser().getUid()).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        ArrayList<String> follower_list = (ArrayList<String>)task.getResult().get("followed_by");
+                        num_seguidores.setText(String.valueOf(follower_list.size() -1));
+                    }
+                }
+            });
+        }else {
+            userManager.getUserByUserName(user_name).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        userManager.getCountFollowers(task.getResult().getDocuments().get(0).getId()).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    ArrayList<String> follower_list = (ArrayList<String>)task.getResult().get("followed_by");
+                                    num_seguidores.setText(String.valueOf(follower_list.size() -1));
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        }
 
 
 

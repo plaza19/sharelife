@@ -9,7 +9,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
@@ -34,13 +36,11 @@ public class PublicacionManager {
         firestore = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
 
-
-
-
     }
 
+
     public Task<Void> save(Publicacion publicacion) {
-        return collection.document().set(publicacion);
+        return collection.document(publicacion.getId()).set(publicacion);
     }
 
     public Task<Void> saveProfile_foto(String url) {
@@ -56,6 +56,25 @@ public class PublicacionManager {
 
         return collection.whereEqualTo("id_usuario", uid);
     }
+
+    public Task<DocumentSnapshot> getLikesFromPublication(String id_publication, String id_user) {
+
+        return collection.document(id_publication).get();
+    }
+
+    public Task<Void> UpdateLike_list(String id_publicacion, String id_user) {
+        return collection.document(id_publicacion).update("liked_by", FieldValue.arrayUnion(id_user));
+    }
+
+    public Query getNumPublications(String uid) {
+        return collection.whereEqualTo("id_usuario", uid);
+
+    }
+
+
+
+
+
 
 
 

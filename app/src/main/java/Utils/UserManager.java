@@ -27,17 +27,13 @@ public class UserManager {
         return FirebaseFirestore.getInstance().collection("Users").document(id).update(value_id, newValue);
     }
 
+
+
     public Task<Void> createUser(Usuario user) {
         return collection_reference.document(user.getId()).set(user);
     }
 
-    public Query getNumPublications(String uid) {
 
-        collection_reference = FirebaseFirestore.getInstance().collection("Publicaciones");
-
-        return collection_reference.whereEqualTo("id_usuario", uid);
-
-    }
 
     public Query getUsers_list_query(String newText) {
 
@@ -46,5 +42,9 @@ public class UserManager {
 
     public Query getUserByUserName(String username) {
         return collection_reference.whereEqualTo("user_name", username);
+    }
+
+    public Task<DocumentSnapshot> getCountFollowers(String id_user) {
+        return collection_reference.document(id_user).get();
     }
 }

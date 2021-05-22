@@ -9,7 +9,8 @@ public class Publicacion {
     }
 
     private String id, comentario, image, id_usuario;
-    private ArrayList<String> viewers;
+    private ArrayList<String> viewers, liked_by;
+    private int likes =0;
 
     public Publicacion(String id, String comentario, String image, String id_usuario) {
         this.id = id;
@@ -38,6 +39,14 @@ public class Publicacion {
         return image;
     }
 
+    public ArrayList<String> getLiked_by() {
+        return liked_by;
+    }
+
+    public void setLiked_by(ArrayList<String> liked_by) {
+        this.liked_by = liked_by;
+    }
+
     public void setImage(String image) {
         this.image = image;
     }
@@ -56,5 +65,13 @@ public class Publicacion {
 
     public void setViewers(ArrayList<String> viewers) {
         this.viewers = viewers;
+    }
+
+    public int getLikes() {
+        return likes;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
     }
 }
