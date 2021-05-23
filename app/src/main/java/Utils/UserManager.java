@@ -4,6 +4,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
@@ -47,4 +48,13 @@ public class UserManager {
     public Task<DocumentSnapshot> getCountFollowers(String id_user) {
         return collection_reference.document(id_user).get();
     }
+
+
+    public Task<Void> updateFollowers_final(String newValue, String id_document) {
+        return collection_reference.document(id_document).update("followed_by", FieldValue.arrayUnion(newValue));
+    }
+
+
+
+
 }

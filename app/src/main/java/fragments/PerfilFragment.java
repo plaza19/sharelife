@@ -3,7 +3,6 @@ package fragments;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.ButtonBarLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -50,7 +49,7 @@ public class PerfilFragment extends Fragment {
     private Usuario user;
     private LinearLayout edit_perfil;
     private ImageView profile_foto;
-    private Button btnn_seguir;
+    private Button btn_seguir;
 
 
     public PerfilFragment() {
@@ -77,10 +76,11 @@ public class PerfilFragment extends Fragment {
         edit_perfil = view.findViewById(R.id.TextView_editar_perfil);
         profile_foto = view.findViewById(R.id.profile_foto_perfil);
         num_seguidores = view.findViewById(R.id.textView_num_seguidores_perfil);
-        btnn_seguir = view.findViewById(R.id.btn_seguir_perfil);
+        btn_seguir = view.findViewById(R.id.btn_seguir_perfil);
         nombre_perfil = view.findViewById(R.id.TextView_nombre_perfil);
         num_publicaciones = view.findViewById(R.id.textView_num_publicaciones_perfil);
         correo = view.findViewById(R.id.TextView_correo_perfil);
+        String id_user = "";
 
         edit_perfil.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,7 +103,7 @@ public class PerfilFragment extends Fragment {
 
 
         if (this.user_name.matches("")) {
-            btnn_seguir.setVisibility(View.GONE);
+            btn_seguir.setVisibility(View.GONE);
             publicacionManager.getAllFromUser(auth.getCurrentUser().getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -259,6 +259,49 @@ public class PerfilFragment extends Fragment {
                 }
             });
         }
+
+        btn_seguir.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                userManager.getUserByUserName(user_name).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+
+                            Log.d("MIRAAA", task.getResult().getDocuments().get(0).get("user_name").toString());
+                            userManager.updateFollowers_final(auth.getCurrentUser().getUid(), task.getResult().getDocuments().get(0).getId()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+
+                                }
+                            });
+
+                        }
+                    }
+                });//Update follower_list
+
+                userManager.getUserByUserName(user_name).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            publicacionManager.getAllFromUser(task.getResult().getDocuments().get(0).getId()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        for (int i=0; i<task.getResult().getDocuments().size(); i++) {
+                                            publicacionManager.updateViewersUser(task.getResult().getDocuments().get(i).getId(), auth.getCurrentUser().getUid());
+                                        }
+                                    }
+
+                                }
+                            });
+                        }
+
+                    }
+                });
+            }
+        });
+
 
 
 

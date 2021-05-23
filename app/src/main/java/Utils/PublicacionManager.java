@@ -57,6 +57,11 @@ public class PublicacionManager {
         return collection.whereEqualTo("id_usuario", uid);
     }
 
+    public Task<Void> updateViewersUser(String id_publication, String newValue) {
+
+        return collection.document(id_publication).update("viewers", FieldValue.arrayUnion(newValue));
+    }
+
     public Task<DocumentSnapshot> getLikesFromPublication(String id_publication, String id_user) {
 
         return collection.document(id_publication).get();
