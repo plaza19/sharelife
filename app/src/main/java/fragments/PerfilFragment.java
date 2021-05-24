@@ -1,5 +1,6 @@
 package fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -18,7 +19,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -31,6 +34,7 @@ import java.util.List;
 
 import Utils.PublicacionManager;
 import Utils.UserManager;
+import activity.ChatActivity;
 import adapters.GridAdapter;
 import modelos.Usuario;
 
@@ -50,6 +54,7 @@ public class PerfilFragment extends Fragment {
     private LinearLayout edit_perfil;
     private ImageView profile_foto;
     private Button btn_seguir;
+    private FloatingActionButton fab_chat;
 
 
     public PerfilFragment() {
@@ -67,6 +72,7 @@ public class PerfilFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_perfil, container, false);
+        fab_chat = view.findViewById(R.id.fab_chat);
         auth = FirebaseAuth.getInstance();
         store = FirebaseFirestore.getInstance();
         userManager = new UserManager();
@@ -97,6 +103,13 @@ public class PerfilFragment extends Fragment {
 
                     }
                 });
+            }
+        });
+
+        fab_chat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToChatActivity();
             }
         });
 
@@ -307,6 +320,21 @@ public class PerfilFragment extends Fragment {
 
 
         return view;
+    }
+
+    private void goToChatActivity() {
+
+        userManager.getUserByUserName(user_name).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                Intent i = new Intent(getContext(), ChatActivity.class);
+                i.putExtra("idUser1", auth.getCurrentUser().getUid());
+                i.putExtra("idUser2", queryDocumentSnapshots.getDocuments().get(0).getId());
+                i.putExtra("idChat",  auth.getCurrentUser().getUid()+queryDocumentSnapshots.getDocuments().get(0).getId());
+                startActivity(i);
+            }
+        });
+
     }
 
     public void openFragment(Fragment fragment) {

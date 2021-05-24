@@ -2,10 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.plaza19.sharelife">
 
-    <uses-feature android:name="android.hardware.camera2" android:required="false"></uses-feature>
+    <uses-feature
+        android:name="android.hardware.camera2"
+        android:required="false" />
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -14,6 +16,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Sharelife">
+        <activity android:name="activity.ChatActivity"></activity>
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -25,12 +28,11 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-
-
-
-        <activity android:name="activity.PublicacionActivity"></activity>
+        <activity android:name="activity.PublicacionActivity" />
         <activity android:name=".RecupinActivity" />
-        <activity android:name=".PrincipalActivity" android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".PrincipalActivity"
+            android:windowSoftInputMode="adjustPan" />
         <activity android:name=".RegistroActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -51,9 +53,6 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/default_notification_channel_id" />
-
-
-
     </application>
 
 </manifest>
