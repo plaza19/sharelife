@@ -115,8 +115,10 @@ public class PerfilFragment extends Fragment {
 
 
 
+
         if (this.user_name.matches("")) {
             btn_seguir.setVisibility(View.GONE);
+            fab_chat.setVisibility(View.GONE);
             publicacionManager.getAllFromUser(auth.getCurrentUser().getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {

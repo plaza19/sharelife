@@ -9,7 +9,7 @@
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:src="@drawable/ic_baseline_arrow_back_24_gray"
-        android:layout_marginLeft="5dp"
+        android:layout_marginLeft="3dp"
         android:layout_marginTop="12dp"
        />
 
@@ -31,6 +31,7 @@
         android:maxLines="1"
         android:layout_toRightOf="@id/profile_photo_chat"/>
     <TextView
+        android:id="@+id/textViewEnLinea"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Hace un momento"
