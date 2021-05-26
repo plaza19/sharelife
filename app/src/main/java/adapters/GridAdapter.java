@@ -5,7 +5,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 
 import com.plaza19.sharelife.R;
 import com.squareup.picasso.Picasso;
@@ -49,4 +51,6 @@ public class GridAdapter extends BaseAdapter {
         }
         return view;
     }
+
+
 }

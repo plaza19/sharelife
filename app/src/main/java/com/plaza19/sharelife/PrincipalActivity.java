@@ -10,9 +10,7 @@ import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
-import Utils.TokenManager;
 import fragments.ChatFragment;
 import fragments.PerfilFragment;
 import fragments.PrincipalFragment;
@@ -21,18 +19,15 @@ import fragments.SearchFragment;
 public class PrincipalActivity extends AppCompatActivity {
 
     BottomNavigationView bottomNavigation;
-    TokenManager tokenManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_principal);
 
-        tokenManager = new TokenManager();
         bottomNavigation = findViewById(R.id.bottom_navigation);
         bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
         openFragment(new PrincipalFragment());
-        createToken();
     }
 
     public void openFragment(Fragment fragment) {
@@ -63,7 +58,5 @@ public class PrincipalActivity extends AppCompatActivity {
                 }
             };
 
-    private void createToken() {
-        tokenManager.create(FirebaseAuth.getInstance().getCurrentUser().getUid());
-    }
+
 }

@@ -12,6 +12,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -109,12 +110,12 @@ public class EditarPerfilFragment extends Fragment {
         btn_guardar.setEnabled(false);
         auth = FirebaseAuth.getInstance();
         userManager = new UserManager();
+        back_arrow = view.findViewById(R.id.back_arrow_editar_perfil);
         profile_foto = view.findViewById(R.id.imageView_foto_perfil_editar_perfil);
 
         //otherFragment
         cardView_galeria = view.findViewById(R.id.card_view_galeria);
         preview = view.findViewById(R.id.imageView_preview_publicacion);
-        back_arrow = view.findViewById(R.id.back_arrow_publicacion);
         btn_publicar = view.findViewById(R.id.btn_publicar_publicacion);
         edit_comentario = view.findViewById(R.id.edit_text_comentario_pubicacion);
         imageHandler = new ImageHander();
@@ -129,6 +130,13 @@ public class EditarPerfilFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 seleccionarOpcionImagen(REQUEST_CODE);
+            }
+        });
+
+        back_arrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openFragment(new PerfilFragment());
             }
         });
 
@@ -349,5 +357,12 @@ public class EditarPerfilFragment extends Fragment {
 
 
         }
+    }
+
+    public void openFragment(Fragment fragment) {
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.container, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 }

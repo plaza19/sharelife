@@ -55,6 +55,13 @@ public class UserManager {
     }
 
 
+    public Task<DocumentSnapshot> getListFollowers(String id_user) {
+        return collection_reference.document(id_user).get();
+    }
+
+
+
+
 
 
 }

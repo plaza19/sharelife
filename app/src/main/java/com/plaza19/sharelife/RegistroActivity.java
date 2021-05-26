@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -152,7 +153,15 @@ public class RegistroActivity extends AppCompatActivity {
                     data_map.put("followed_by", data);
                     data_map.put("profile_image", "");
                     //Documento usuario con el uid que se genera en firebase-auth
-                    firestore.collection(COLLECTION_USERS).document(auth.getCurrentUser().getUid()).set(data_map);
+                    firestore.collection(COLLECTION_USERS).document(auth.getCurrentUser().getUid()).set(data_map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            if (task.isSuccessful()) {
+                                loading_dialog.hide();
+                                finish();
+                            }
+                        }
+                    });
                 }else {
                     Toast.makeText(RegistroActivity.this, "No se ha podido crear el usuario", Toast.LENGTH_SHORT).show();
                 }

@@ -26,6 +26,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.UploadTask;
@@ -38,13 +39,16 @@ import com.yanzhenjie.loading.dialog.LoadingDialog;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 import Utils.FileUtil;
 import Utils.Hash;
 import Utils.ImageHander;
 import Utils.PublicacionManager;
+import Utils.UserManager;
 import modelos.Publicacion;
 
 public class PublicacionActivity extends AppCompatActivity {
@@ -64,12 +68,14 @@ public class PublicacionActivity extends AppCompatActivity {
     private CharSequence opciones[];
     private String foto_absolute_path;
     private String foto_path;
+    private UserManager userManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_publicacion);
 
+        userManager = new UserManager();
         cardView_galeria = findViewById(R.id.card_view_galeria);
         preview = findViewById(R.id.imageView_preview_publicacion);
         back_arrow = findViewById(R.id.back_arrow_publicacion);
@@ -178,35 +184,41 @@ public class PublicacionActivity extends AppCompatActivity {
                             publicacionManager.getAllFromUser(publicacion.getId_usuario()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        ArrayList<String> viewers = new ArrayList<String>(); //se guardan las personas que pueden ver
-                                        viewers = (ArrayList<String>) task.getResult().getDocuments().get(0).get("viewers");
-                                        publicacion.setViewers(viewers);
-                                        String url = uri.toString();
-                                        Publicacion publicacion = new Publicacion();
-                                        publicacion.setImage(url);
-                                        publicacion.setViewers(viewers);
-                                        publicacion.setComentario(edit_comentario.getText().toString());
-                                        publicacion.setId_usuario(auth.getCurrentUser().getUid());
-                                        ArrayList<String> liked_by = new ArrayList<>(); //personas a las que le ha gustado la imagen
-                                        liked_by.add(auth.getCurrentUser().getUid());
-                                        publicacion.setLiked_by(liked_by);
-                                        publicacion.setLikes(0);
-                                        publicacion.setId(Hash.md5(publicacion.getImage() + publicacion.getId_usuario() + new Date().toString()));
-                                        publicacionManager.save(publicacion).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task_save) {
-                                                if (task_save.isSuccessful()) {
-                                                    loading_dialog.hide();
-                                                    Toast.makeText(PublicacionActivity.this, "La imagen se ha guardado correctamente", Toast.LENGTH_SHORT).show();
-                                                    resetForm();
-                                                }else {
-                                                    loading_dialog.hide();
-                                                    Toast.makeText(PublicacionActivity.this, "Se ha producido un error al guardar la imagen", Toast.LENGTH_SHORT).show();
-                                                }
+                                    userManager.getListFollowers(auth.getCurrentUser().getUid()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                            if (task.isSuccessful()) {
+                                                ArrayList<String> viewers = new ArrayList<String>(); //se guardan las personas que pueden ver
+                                                viewers = (ArrayList<String>) documentSnapshot.get("followed_by");
+                                                publicacion.setViewers(viewers);
+                                                String url = uri.toString();
+                                                Publicacion publicacion = new Publicacion();
+                                                publicacion.setImage(url);
+                                                publicacion.setViewers(viewers);
+                                                publicacion.setComentario(edit_comentario.getText().toString());
+                                                publicacion.setId_usuario(auth.getCurrentUser().getUid());
+                                                ArrayList<String> liked_by = new ArrayList<>(); //personas a las que le ha gustado la imagen
+                                                liked_by.add(auth.getCurrentUser().getUid());
+                                                publicacion.setLiked_by(liked_by);
+                                                publicacion.setLikes(0);
+                                                publicacion.setId(Hash.md5(publicacion.getImage() + publicacion.getId_usuario() + new Date().toString()));
+                                                publicacionManager.save(publicacion).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task_save) {
+                                                        if (task_save.isSuccessful()) {
+                                                            loading_dialog.hide();
+                                                            Toast.makeText(PublicacionActivity.this, "La imagen se ha guardado correctamente", Toast.LENGTH_SHORT).show();
+                                                            resetForm();
+                                                        }else {
+                                                            loading_dialog.hide();
+                                                            Toast.makeText(PublicacionActivity.this, "Se ha producido un error al guardar la imagen", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    }
+                                                });
+
                                             }
-                                        });
-                                    }
+                                        }
+                                    });
                                 }
                             });
 

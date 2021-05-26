@@ -40,7 +40,6 @@
             android:hint="Mensaje"
             android:inputType="textMultiLine"
             android:layout_weight="1"
-            android:background="@drawable/edit_txt_chat"
             android:padding="10dp"
             />
         

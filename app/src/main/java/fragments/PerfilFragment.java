@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,7 +52,7 @@ public class PerfilFragment extends Fragment {
     private GridAdapter gridAdapter;
     private String user_name;
     private Usuario user;
-    private LinearLayout edit_perfil;
+    private Button edit_perfil;
     private ImageView profile_foto;
     private Button btn_seguir;
     private FloatingActionButton fab_chat;
@@ -79,7 +80,7 @@ public class PerfilFragment extends Fragment {
         publicacionManager = new PublicacionManager();
         gridView = view.findViewById(R.id.grid_view_perfil);
         ArrayList<String> list_publications = new ArrayList<String>();
-        edit_perfil = view.findViewById(R.id.TextView_editar_perfil);
+        edit_perfil = view.findViewById(R.id.btn_editar_perfil);
         profile_foto = view.findViewById(R.id.profile_foto_perfil);
         num_seguidores = view.findViewById(R.id.textView_num_seguidores_perfil);
         btn_seguir = view.findViewById(R.id.btn_seguir_perfil);
@@ -129,6 +130,7 @@ public class PerfilFragment extends Fragment {
                             list_publications.add(list.get(i).get("image").toString());
                             gridAdapter = new GridAdapter(getContext(), list_publications);
                             gridView.setAdapter(gridAdapter);
+                            setGridViewHeightBasedOnChildren( gridView ,3);
                         }
                     }
                 }
@@ -344,6 +346,34 @@ public class PerfilFragment extends Fragment {
         transaction.replace(R.id.container, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    public void setGridViewHeightBasedOnChildren(GridView gridView, int columns) {
+        ListAdapter listAdapter = gridView.getAdapter();
+        if (listAdapter == null) {
+            // pre-condition
+            return;
+        }
+
+        int totalHeight = 0;
+        int items = listAdapter.getCount();
+        int rows = 0;
+
+        View listItem = listAdapter.getView(0, null, gridView);
+        listItem.measure(0, 0);
+        totalHeight = listItem.getMeasuredHeight();
+
+        float x = 1;
+        if( items > columns ){
+            x = items/columns;
+            rows = (int) (x + 1);
+            totalHeight *= rows;
+        }
+
+        ViewGroup.LayoutParams params = gridView.getLayoutParams();
+        params.height = totalHeight;
+        gridView.setLayoutParams(params);
+
     }
 
 }
